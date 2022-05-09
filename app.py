@@ -47,8 +47,9 @@ def main():
     show_verses_with_lemmata(selected_lemmata_text_df)
     
     """---"""
-    
-    speaker_to_verse_mapping_visual(selected_lemmata_text_df, remaining_selected_lemmata_text_df, play)
+
+    color_per_lemma = st.checkbox("one color per lemma")
+    speaker_to_verse_mapping_visual(selected_lemmata_text_df, remaining_selected_lemmata_text_df, play, color_per_lemma)
     
 if __name__ == '__main__':
     main()

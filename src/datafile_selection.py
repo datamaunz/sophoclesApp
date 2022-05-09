@@ -1,5 +1,9 @@
 from src.helperFunctions import *
+import unicodedata as ud
 import os
+
+def strip_accents(s):
+    return ''.join([c for c in ud.normalize('NFD', s) if ud.category(c) != 'Mn'])
 
 @st.cache
 def retrieve_play_names(author):
@@ -15,8 +19,11 @@ def get_lemmata_dfs_stacked(author, play_names):
         lemmata_count_df["play_name"] = play_name
         lemmata_count_dfs.append(lemmata_count_df)
     lemmata_count_df = pd.concat(lemmata_count_dfs)
+    lemmata_count_df = lemmata_count_df[lemmata_count_df.lemma.isna() == False]
+    lemmata_count_df["lemma_min"] = lemmata_count_df["lemma_min"].apply(lambda x: strip_accents(x))
     
-    return lemmata_count_df[lemmata_count_df.lemma.isna() == False].sort_values("lemma_min")
+    
+    return lemmata_count_df.sort_values("lemma_min")
     #return lemmata_count_df
 
 
