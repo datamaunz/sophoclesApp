@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import plotly.express as px
 
 def lineBreaksForString(string, n):
     wordList = string.split(" ")
@@ -62,10 +63,12 @@ def createOverviewFigure(df, selectedWordDf):
 
     st.plotly_chart(fig, use_container_width=True)
 
-@st.cache(suppress_st_warning=True, show_spinner=False)    
+#@st.cache(suppress_st_warning=True, show_spinner=False)    
+@st.cache_data
 def readInFile(path):
     return pd.read_csv(path)
 
-@st.cache(suppress_st_warning=True, show_spinner=False)    
+#@st.cache(suppress_st_warning=True, show_spinner=False)    
+@st.cache_data
 def createSelectedWordDf(lemmaDf, selectedWords):
     return lemmaDf[lemmaDf.lemma.isin(selectedWords)]
