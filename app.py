@@ -87,6 +87,8 @@ def main():
         
         st.markdown(
             """
+            ### Github Repo
+            
             The Github repository of the project can be found [here](https://github.com/datamaunz/sophoclesApp).
             """
         )
