@@ -84,6 +84,13 @@ def main():
         
     if page_type == page_types[3]:
         
+        
+        st.markdown(
+            """
+            The Github repository of the project can be found [here](https://github.com/datamaunz/sophoclesApp).
+            """
+        )
+        
         st.markdown(
             "### Data"
         )
