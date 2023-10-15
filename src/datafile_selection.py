@@ -10,11 +10,12 @@ def strip_accents(s):
 def retrieve_play_names(author):
     #play_names = sorted([x.replace(".csv", "") for x in os.listdir(f'dataFiles/{author.lower()}/texts') if x not in [".DS_Store"]])
     #play_names = [x.replace(".csv", "") for x in os.listdir(f'dataFiles/{author.lower()}/texts') if x not in [".DS_Store"]]
-    play_names = [x.replace(".csv", "") for x in os.listdir(f'dataFiles/texts_with_lemmas/{author.lower()}') if x not in [".DS_Store"]]
-    return play_names
+    st.session_state["play_names"] = [x.replace(".csv", "") for x in os.listdir(f'dataFiles/texts_with_lemmas/{author.lower()}') if x not in [".DS_Store"]]
+    return st.session_state["play_names"]
+    
 
 #@st.cache
-#@st.cache_data
+@st.cache_data
 def get_lemmata_dfs_stacked(author, play_names):
     lemmata_count_dfs = []
     for play_name in play_names:    
@@ -29,7 +30,11 @@ def get_lemmata_dfs_stacked(author, play_names):
     return lemmata_count_df.sort_values("lemma_lower")
     #return lemmata_count_df
 
-
+@st.cache_data
+def get_play_lemmata_versus_non_play_lemmata(all_lemmata_count_dfs, play):
+        play_lemmata_df = all_lemmata_count_dfs[all_lemmata_count_dfs.title == play]
+        non_play_lemmata_df = all_lemmata_count_dfs[all_lemmata_count_dfs.title != play]
+        return play_lemmata_df, non_play_lemmata_df
 
 #@st.cache
 @st.cache_data

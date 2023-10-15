@@ -48,13 +48,3 @@ def write_comparison_in_words(non_play_lemmata_stats, selected_lemmata, play):
             st.markdown(f"""In **{play}** the selected group of lemmata is **less frequent** than in""")
             for item in not_more_frequent_than_in:
                 st.markdown(f"""- {item}""")
-
-
-                
-def show_verses_with_lemmata(selected_lemmata_text_df):
-    
-    st.markdown(f"### Examples")
-    st.write("")
-
-    for index, row in selected_lemmata_text_df.iterrows():
-        st.markdown(f"""**{row.Name}**: {row.Speech} ({str(int(row.inferred_verse_number))})""")

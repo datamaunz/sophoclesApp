@@ -1,6 +1,18 @@
 from src.helperFunctions import *
 import os
 
+
+
+
+@st.cache_data
+def lemma_stats_across_plays(all_lemmata_count_dfs, selected_lemmas):
+
+    lemma_overview = all_lemmata_count_dfs[all_lemmata_count_dfs.lemma.isin(selected_lemmas)]
+    lemma_overview = lemma_overview.sort_values("COUNT_perc", ascending=False)
+    lemma_overview["error_down"] = lemma_overview["COUNT_perc"] - lemma_overview["LOW_perc"]
+    lemma_overview["error_up"] = lemma_overview["HIGH_perc"] - lemma_overview["COUNT_perc"]
+    return lemma_overview
+
 @st.cache_data
 def comparison_of_play_to_others_for_selection(play_lemmata_df, non_play_lemmata_df, selected_lemmata, play_names, play):
     
@@ -25,33 +37,17 @@ def comparison_of_play_to_others_for_selection(play_lemmata_df, non_play_lemmata
     return play_lemmata_stats, non_play_lemmata_stats 
 
 @st.cache_data
-def lemma_stats_across_plays(all_lemmata_count_dfs, selected_lemmas):
-
-    lemma_overview = all_lemmata_count_dfs[all_lemmata_count_dfs.lemma.isin(selected_lemmas)]
-    lemma_overview = lemma_overview.sort_values("COUNT_perc", ascending=False)
-    lemma_overview["error_down"] = lemma_overview["COUNT_perc"] - lemma_overview["LOW_perc"]
-    lemma_overview["error_up"] = lemma_overview["HIGH_perc"] - lemma_overview["COUNT_perc"]
-    return lemma_overview
-
-@st.cache_data
 def compute_counts_for_lemmas_in_plays(all_lemmata_count_dfs, play):
     play_counts = all_lemmata_count_dfs[all_lemmata_count_dfs.play_name == play]
     
-    play_counts_basic = play_counts[["lemma", "COUNT", "LOW", "COUNT_perc", "LOW_perc"]]
+    play_counts_basic = play_counts[["lemma", "COUNT", "LOW", "COUNT_perc", "LOW_perc", "HIGH", "HIGH_perc"]]
     play_counts_basic.columns = [f'{x}_{play}' for x in play_counts_basic.columns]
     
     non_play_counts = all_lemmata_count_dfs[(all_lemmata_count_dfs.play_name != play) & (all_lemmata_count_dfs.lemma.isin(play_counts.lemma.to_list()))]
     play_counts_for_comparison_df = pd.merge(non_play_counts, play_counts_basic, left_on="lemma", right_on=f"lemma_{play}")
     return play_counts_for_comparison_df
 
-@st.cache_data
-def lemma_comparison_with_remaining_plays(play_counts_for_comparison_df, play):
-    play_counts_for_comparison_df["comparison"] = play_counts_for_comparison_df[f"LOW_perc_{play}"] > play_counts_for_comparison_df[f"COUNT_perc"]
-    comp_df = play_counts_for_comparison_df.groupby("lemma").mean()
-    return comp_df
 
-@st.cache_data
-def identify_lemmas_with_higher_frequency_than_any_other_play(comp_df):
-    significant_comp = comp_df[comp_df.comparison == 1]
-    significant_lemmas = significant_comp.index.to_list()
-    return significant_lemmas
+
+
+
